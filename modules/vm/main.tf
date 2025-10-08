@@ -43,12 +43,14 @@ resource "azurerm_virtual_machine" "javavm" {
 
 os_profile_linux_config {
   disable_password_authentication = true
-  ssh_keys {
-  key_data = file(var.ssh_public_key_path)
 
+  ssh_keys {
+   
+    key_data = file("${path.root}/publickey.pub")
     path     = "/home/${var.vm_username}/.ssh/authorized_keys"
   }
 }
+
 
 
   }
