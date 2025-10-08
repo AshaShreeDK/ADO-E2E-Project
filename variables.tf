@@ -34,7 +34,4 @@ variable "vm_pass" {
   sensitive   = true
 }
 
-variable "ssh_public_key_path" {
-  type        = string
-  description = "Path to SSH public key file (OpenSSH format)"
-}
+
