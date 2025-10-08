@@ -23,6 +23,7 @@ module "vm" {
   vm_size          = var.vm_size
   vm_username      = var.vm_username
   vm_pass          = var.vm_pass
- ssh_public_key_path = var.ssh_public_key_path
+ #ssh_public_key_path = var.ssh_public_key_path
+ ssh_public_key = file("${path.root}/publickey.pub")
    
 }
