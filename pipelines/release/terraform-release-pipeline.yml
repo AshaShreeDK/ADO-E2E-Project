@@ -1,0 +1,88 @@
+trigger:
+- none
+
+parameters:
+  - name: ENV
+    type: string 
+    default: "dev"
+    values:
+      - dev
+      - prod
+  - name: ACTION
+    type: string
+    default: "plan"
+    values:
+      - "plan"
+      - "apply"
+      - "destroy"
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: TerraformInstaller@2
+  inputs:
+    terraformVersion: 'latest'
+    
+- task: TerraformCLI@2
+  displayName: "Terraform init"
+  inputs:
+    command: 'init'
+    backendType: 'azurerm'
+    backendServiceArm: 'Free (fdfb7214-0920-4357-adc9-606754ea4522)'
+    allowTelemetryCollection: false
+
+- task: TerraformCLI@2
+  displayName: "Try select workspace"
+  inputs:
+    command: 'workspace'
+    workspaceSubCommand: 'select'
+    workspaceName: '${{ parameters.ENV }}'
+    allowTelemetryCollection: false
+  continueOnError: true
+
+- task: TerraformCLI@2
+  displayName: "Create workspace if missing"
+  condition: failed()
+  inputs:
+    command: 'workspace'
+    workspaceSubCommand: 'new'
+    workspaceName: '${{ parameters.ENV }}'
+    allowTelemetryCollection: false
+    skipExistingWorkspace: true
+
+- task: TerraformCLI@2
+  inputs:
+    command: 'workspace'
+    allowTelemetryCollection: true
+    workspaceName: '${{ parameters.ENV }}'
+
+- ${{ if eq(parameters.ACTION, 'plan') }}:
+  - task: TerraformCLI@2
+    displayName: "Terraform plan"
+    inputs:
+      command: 'plan'
+      environmentServiceName: 'Free (fdfb7214-0920-4357-adc9-606754ea4522)'
+      runAzLogin: true
+      commandOptions: '-var-file  ${{ parameters.ENV }}.tfvars'
+      allowTelemetryCollection: false
+
+- ${{ elseif eq(parameters.ACTION, 'apply') }}:
+  - task: TerraformCLI@2
+    displayName: "Terraform apply"
+    inputs:
+      command: 'apply'
+      environmentServiceName: 'Free (fdfb7214-0920-4357-adc9-606754ea4522)'
+      runAzLogin: true
+      commandOptions: '-var-file ${{ parameters.ENV }}.tfvars'
+      allowTelemetryCollection: false
+
+- ${{ elseif eq(parameters.action, 'destroy') }}:
+  - task: TerraformCLI@2
+    displayName: "Terraform destroy"
+    inputs:
+      command: 'destroy'
+      environmentServiceName: 'Free (fdfb7214-0920-4357-adc9-606754ea4522)'
+      runAzLogin: true
+      commandOptions: '-var-file ${{ parameters.ENV }}.tfvars'
+      allowTelemetryCollection: false
