@@ -12,7 +12,6 @@ module "network" {
   java_cidr        = var.java_cidr
   java_sub_cidr    = var.java_sub_cidr
 }
-
 module "vm" {
   source           = "./modules/vm"
   application_name = var.application_name
@@ -23,5 +22,7 @@ module "vm" {
   vm_size          = var.vm_size
   vm_username      = var.vm_username
   vm_pass          = var.vm_pass
- ssh_public_key_path = "${path.root}/publickey.pub"  
+
+  ssh_public_key = file("${path.root}/publickey.pub")
 }
+
