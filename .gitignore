@@ -1,0 +1,18 @@
+﻿# --- Terraform ---
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+
+# Keep lock file committed (best practice)
+# .terraform.lock.hcl  (do not ignore)
+
+# Only ignore the default tfvars file
+terraform.tfvars
+*.tfplan
+
+# --- Editor/OS files ---
+.vscode/
+.DS_Store
+Thumbs.db
