@@ -1,12 +1,21 @@
 resource "azurerm_resource_group" "javarg" {
-  name     = "${var.application_name}-rg"
+  # Resource Group name includes workspace (dev/prod) to avoid collisions
+  name     = "${var.application_name}-${terraform.workspace}-rg"
   location = var.location
+
+    tags = {
+    application = var.application_name
+    environment = terraform.workspace
+    managedBy   = "terraform"
+  }
 }
 
 output "rg_name" {
-  value = azurerm_resource_group.javarg.name
+  description = "The name of the Resource Group"
+  value       = azurerm_resource_group.javarg.name
 }
 
 output "rg_location" {
-  value = azurerm_resource_group.javarg.location
+  description = "The location of the Resource Group"
+  value       = azurerm_resource_group.javarg.location
 }
