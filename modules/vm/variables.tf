@@ -38,7 +38,7 @@ variable "vm_pass" {
   description = "VM admin password (not used if SSH is enforced)."
   sensitive   = true
 }
-variable "ssh_public_key_path" {
+variable "ssh_public_key" {
   type        = string
-  description = "Path to the SSH public key file"
+  description = "Public SSH key (OpenSSH format)"
 }
