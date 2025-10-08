@@ -18,7 +18,7 @@ resource "azurerm_virtual_machine" "javavm" {
   network_interface_ids = [azurerm_network_interface.javanic.id]
   vm_size               = var.vm_size
 
-  delete_os_disk_on_termination   = true
+  delete_os_disk_on_termination    = true
   delete_data_disks_on_termination = true
 
   storage_image_reference {
@@ -36,21 +36,18 @@ resource "azurerm_virtual_machine" "javavm" {
   }
 
   os_profile {
-    computer_name  = "${var.application_name}-vm"
+    computer_name  = replace(var.application_name, "/[^a-zA-Z0-9-]/", "-")
     admin_username = var.vm_username
     admin_password = var.vm_pass
   }
 
-os_profile_linux_config {
-  disable_password_authentication = true
+  os_profile_linux_config {
+    disable_password_authentication = true
 
-  ssh_keys {
-   
-    key_data = file("${path.root}/publickey.pub")
-    path     = "/home/${var.vm_username}/.ssh/authorized_keys"
+    ssh_keys {
+
+      key_data = var.ssh_public_key
+      path     = "/home/${var.vm_username}/.ssh/authorized_keys"
+    }
   }
 }
-
-
-
-  }
