@@ -3,7 +3,7 @@ resource "azurerm_resource_group" "javarg" {
   name     = "${var.application_name}-${terraform.workspace}-rg"
   location = var.location
 
-    tags = {
+  tags = {
     application = var.application_name
     environment = terraform.workspace
     managedBy   = "terraform"
